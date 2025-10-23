@@ -93,6 +93,20 @@ export function registerInboundRoutes(fastify) {
         // Handle open event for ElevenLabs WebSocket
         elevenLabsWs.on("open", () => {
           console.log("[II] Connected to Conversational AI.");
+          
+          // Bu kısım MUTLAKA gerekli - ElevenLabs'a konuşmayı başlatmasını söyler
+          const initialConfig = {
+            type: "conversation_initiation_client_data",
+            conversation_config_override: {
+              agent: {
+                prompt: { prompt: "you are a helpful AI assistant" },
+                first_message: "Hello! How can I help you today?",
+              },
+            }
+          };
+          
+          console.log("[II] Sending initial config to ElevenLabs");
+          elevenLabsWs.send(JSON.stringify(initialConfig));
         });
 
         // Handle messages from ElevenLabs
